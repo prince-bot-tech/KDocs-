@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>KDocs-Pro | Job documents, done right</title>
+<link rel="stylesheet" href="/style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand">
+      <span class="brand-mark">K</span>
+      <span class="brand-name">KDocs<span class="accent">-Pro</span></span>
+    </div>
+    <div class="topbar-actions">
+      <button id="accountBtn" class="icon-btn account-btn">Sign in</button>
+      <button id="darkToggle" class="icon-btn" title="Toggle dark mode">🌙</button>
+    </div>
+  </header>
+
+  <div id="authModalBackdrop" class="modal-backdrop hidden">
+    <div class="modal">
+      <button id="authModalClose" class="modal-close">&times;</button>
+
+      <div id="authLoggedOutView">
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-tab="login">Sign In</button>
+          <button class="auth-tab" data-tab="signup">Create Account</button>
+        </div>
+
+        <div id="googleBtnContainer" class="google-btn-container hidden"></div>
+        <div id="googleDivider" class="pay-divider hidden"><span>or use email</span></div>
+
+        <form id="loginForm" class="auth-form">
+          <label for="loginEmail">Email</label>
+          <input id="loginEmail" type="email" required />
+          <label for="loginPassword">Password</label>
+          <input id="loginPassword" type="password" required />
+          <button class="btn primary" type="submit">Sign In</button>
+          <p id="loginError" class="pay-status"></p>
+        </form>
+
+        <form id="signupForm" class="auth-form hidden">
+          <label for="signupName">Full name</label>
+          <input id="signupName" type="text" required />
+          <label for="signupEmail">Email</label>
+          <input id="signupEmail" type="email" required />
+          <label for="signupPassword">Password (8+ characters)</label>
+          <input id="signupPassword" type="password" required minlength="8" />
+          <button class="btn primary" type="submit">Create Account</button>
+          <p id="signupError" class="pay-status"></p>
+        </form>
+
+        <button id="continueGuestBtn" class="btn ghost guest-btn">Continue without an account →</button>
+      </div>
+
+      <div id="authLoggedInView" class="hidden">
+        <div class="auth-tabs">
+          <button class="auth-tab active" data-account-tab="profile">Profile</button>
+          <button class="auth-tab" data-account-tab="locker">My Documents</button>
+        </div>
+
+        <div id="accountProfileView">
+          <div class="profile-info">
+            <div><span class="profile-label">Name</span><span id="profileName"></span></div>
+            <div><span class="profile-label">Email</span><span id="profileEmail"></span></div>
+            <div><span class="profile-label">Signed up with</span><span id="profileProvider"></span></div>
+            <div><span class="profile-label">Member since</span><span id="profileCreatedAt"></span></div>
+          </div>
+          <button id="logoutBtn" class="btn ghost">Sign Out</button>
+        </div>
+
+        <div id="accountLockerView" class="hidden">
+          <p class="hint">Documents you've downloaded while signed in. Re-download anytime, no extra charge.</p>
+          <div id="lockerList" class="locker-list"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <main class="wrap">
+    <section class="intro">
+      <h1>Every document for your job or your studies, in one place.</h1>
+      <p>Pick a document, choose a template, fill in your details, and download a clean PDF for just <strong id="priceTag">KSh 20</strong>.</p>
+    </section>
+
+    <div class="stepper" id="stepper">
+      <div class="step active" data-step="1">1. Document</div>
+      <div class="step" data-step="2">2. Template</div>
+      <div class="step" data-step="3">3. Write, Score & Pay</div>
+    </div>
+
+    <section id="panel-catalog" class="panel">
+      <input id="catalogSearch" class="catalog-search" type="text" placeholder="Search documents..." />
+      <div id="catalogList"></div>
+    </section>
+
+    <section id="panel-template" class="panel hidden">
+      <h2>Pick a template</h2>
+      <p class="hint">Real, live previews below — filled with sample content so you can compare layouts before choosing.</p>
+      <div id="templateGrid" class="card-grid"></div>
+      <button class="btn ghost back-btn" data-back="catalog">← Back</button>
+    </section>
+
+    <section id="panel-write" class="panel hidden">
+      <h2>Write, preview & check your Ready Score</h2>
+      <div class="write-layout">
+        <div class="write-form-col">
+          <form id="docForm" class="doc-form"></form>
+        </div>
+        <div class="write-preview-col">
+          <div class="preview-shell" id="previewShell">
+            <iframe id="previewFrame" title="Document preview"></iframe>
+            <div class="preview-shade" id="previewShade">
+              <span>Preview hidden — this tab isn't focused</span>
+            </div>
+            <div class="preview-updating hidden" id="previewUpdating">Updating…</div>
+          </div>
+          <p class="hint">This preview is watermarked. Pay to unlock a clean, downloadable copy.</p>
+
+          <div class="ready-score-card" id="readyScoreCard">
+            <div class="ready-score-header">
+              <span id="readyScoreTitle">Ready Score</span>
+              <span class="ready-score-value" id="readyScoreValue">--</span>
+            </div>
+            <div class="ready-score-label" id="readyScoreLabel"></div>
+            <ul class="ready-score-checklist" id="readyScoreChecklist"></ul>
+            <p class="ready-score-disclaimer" id="readyScoreDisclaimer"></p>
+          </div>
+
+          <div class="pay-box" id="payBox">
+            <label for="phoneInput">M-Pesa phone number</label>
+            <input id="phoneInput" type="tel" placeholder="07XXXXXXXX" />
+            <button class="btn primary" id="payBtn">Pay KSh <span id="priceTag2">20</span> with M-Pesa</button>
+            <p id="payStatus" class="pay-status"></p>
+
+            <div class="pay-divider"><span>or</span></div>
+
+            <label for="emailInput">Email (for card/bank receipt)</label>
+            <input id="emailInput" type="email" placeholder="you@example.com" />
+            <button class="btn secondary" id="intasendPayBtn">Pay $<span id="priceTagUsd1">0.50</span> with Card / Bank / Other</button>
+            <p id="intasendPayStatus" class="pay-status"></p>
+          </div>
+
+          <button class="btn primary hidden" id="downloadBtn">Download clean PDF</button>
+        </div>
+      </div>
+      <button class="btn ghost back-btn" data-back="template">← Back</button>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <p>KDocs-Pro &mdash; built for Kenyan jobseekers and professionals.</p>
+  </footer>
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <script src="/app.js"></script>
+</body>
+</html>
